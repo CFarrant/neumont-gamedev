@@ -10,6 +10,9 @@ namespace nc
 		Vector2D(float x, float y) : x{ x }, y{ y } {}
 		Vector2D(int x, int y) : x{ static_cast<float>(x) }, y{ static_cast<float>(y) } {}
 
+		float& operator [] (size_t index) { return (&x)[index]; }
+		const float& operator [] (size_t index) const { return (&x)[index]; }
+
 		void Set(float x, float y) { this->x = x; this->y = y; }
 
 		Vector2D operator + (const Vector2D& v) const { return Vector2D{ x + v.x, y + v.y }; }
@@ -32,12 +35,15 @@ namespace nc
 		Vector2D& operator *= (float s) { x *= s; y *= s; return *this; }
 		Vector2D& operator /= (float s) { x /= s; y /= s; return *this; }
 
+		Vector2D operator - () { return Vector2D{ -x, -y }; }
+
 		float Length() const;
 		float LengthSquared() const;
 		
 		static float Distance(const Vector2D& v1, const Vector2D& v2);
 		Vector2D Normalized() const;
 		void Normalize();
+		static Vector2D Rotate(const Vector2D& v, float radians);
 	};
 
 	float Vector2D::Length() const
@@ -74,5 +80,12 @@ namespace nc
 		{
 			*this /= length;
 		}
+	}
+
+	inline Vector2D Vector2D::Rotate(const Vector2D& v, float radians) 
+	{
+		float x = v.x * std::cos(radians) - v.y * std::sin(radians);
+		float y = v.x * std::sin(radians) + v.y * std::cos(radians);
+		return Vector2D{ x, y };
 	}
 }

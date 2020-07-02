@@ -12,6 +12,9 @@
     <Filter Include="Math">
       <UniqueIdentifier>{b4b57160-4805-4580-b7e2-a1f7d24b0474}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{57ee9ac8-8b81-48f8-a069-da02fb9d64f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -32,12 +35,21 @@
     <ClInclude Include="Math\Vector2D.h">
       <Filter>Math</Filter>
     </ClInclude>
+    <ClInclude Include="Math\Color.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Shape.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
