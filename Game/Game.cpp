@@ -1,36 +1,54 @@
 // Game.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
+#include "pch.h"
 #include "core.h"
 #include "Math/Math.h"
 #include "Math/Random.h"
 #include "Math/Vector2D.h"
 #include "Math/Color.h"
-#include <iostream>
+#include "Graphics/Shape.h"
 
 const size_t NUM_POINTS = 40;
-float speed = 5.0;
-std::vector<nc::Vector2D> points = { {0,-3}, {3,3}, {0,1}, {-3,3}, {0,-3} };
-nc::Color color{ 0,1,1 };
+float speed = 300.0;
+
+std::vector<nc::Vector2D> points = { {0, 0}, {0, -3}, {1, -4}, {2, -3}, {3, -6}, {4, -3}, {5, -4}, {6, -3}, {6, 0}, {5, -2}, {3, -1}, {1, -2}, {0, 0} };
+nc::Color color = { 0.75f, 0.0f, 0.0f };
+nc::Shape ship(points, color);
 
 nc::Vector2D position{ 400, 300 };
 float scale = 4.0f;
 float angle = 0.0f;
 
-bool Update(float dt)
+float frametime;
+using timer_t = DWORD;
+timer_t prevTime, deltaTime;
+
+bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 {
+	frametime = dt;
+
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
+
+	nc::Vector2D force{0,0};
+	if (Core::Input::IsPressed('W')) { force = nc::Vector2D::up * speed * dt; }
+	nc::Vector2D direction = force;
+	direction = nc::Vector2D::Rotate(direction, angle);
+	position = position + direction;
 	
-	if (Core::Input::IsPressed(Core::Input::KEY_LEFT) || Core::Input::IsPressed('A')) { angle = angle - dt * 3.0f; }
-	if (Core::Input::IsPressed(Core::Input::KEY_RIGHT) || Core::Input::IsPressed('D')) { angle = angle + dt * 3.0f; }
-	//if (Core::Input::IsPressed(Core::Input::KEY_DOWN) || Core::Input::IsPressed('S')) { position += nc::Vector2D{ 0.0f, 1.0f } * speed; }
-	//if (Core::Input::IsPressed(Core::Input::KEY_UP) || Core::Input::IsPressed('W')) { position += nc::Vector2D{ 0.0f, -1.0f } * speed; }
+	//rotate
+	if (Core::Input::IsPressed('A')) { angle = angle - (dt * 3.0f); }
+	if (Core::Input::IsPressed('D')) { angle = angle + (dt * 3.0f); }
+
+	//translate
+	//if (Core::Input::IsPressed('A')) { position += nc::Vector2D::left * speed * dt; }
+	//if (Core::Input::IsPressed('D')) { position += nc::Vector2D::right * speed * dt; }
 
 	int x, y;
 	Core::Input::GetMousePos(x, y);
 
-	nc::Vector2D target = nc::Vector2D{ x,y };
-	nc::Vector2D direction = target - position; // (head <- tail)
+	//nc::Vector2D target = nc::Vector2D{ x,y };
+	//nc::Vector2D direction = target - position; // (head <- tail)
 
 	//position = position + direction.Normalized() * 5.0f;
 
@@ -39,35 +57,16 @@ bool Update(float dt)
 
 void Draw(Core::Graphics& graphics)
 {
-	// rgb (8-bits/1-byte, 8, 8) (0-255, 0-255, 0-255)
-	// 0-1.0 Range
-	// rgb
-	graphics.SetColor(color);
-	//graphics.DrawLine(static_cast<float>(rand() % 800), static_cast<float>(rand() % 600), static_cast<float>(rand() % 800), static_cast<float>(rand() % 600));
-
-	for (size_t i = 0; i < points.size() - 1; i++)
-	{
-		// local / object space points
-		nc::Vector2D p1 = points[i];
-		nc::Vector2D p2 = points[i + 1];
-
-		// transform
-		// scale
-		p1 = p1 * scale;
-		p2 = p2 * scale;
-		//rotation
-		p1 = nc::Vector2D::Rotate(p1, angle);
-		p2 = nc::Vector2D::Rotate(p2, angle);
-		//translate
-		p1 = p1 + position;
-		p2 = p2 + position;
-
-		graphics.DrawLine(p1.x, p1.y, p2.x, p2.y);
-	}
+	graphics.DrawString(10, 10, std::to_string(frametime).c_str());
+	graphics.DrawString(10, 20, std::to_string(1.0f / frametime).c_str());
+	ship.Draw(graphics, position, scale, angle);
 }
 
 int main()
 {
+	//DWORD ticks = GetTickCount(); // how many ticks in a second
+	//std::cout << ticks / 1000 / 60 / 60 << std::endl;
+
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);
 	Core::RegisterUpdateFn(Update);

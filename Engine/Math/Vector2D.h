@@ -44,32 +44,38 @@ namespace nc
 		Vector2D Normalized() const;
 		void Normalize();
 		static Vector2D Rotate(const Vector2D& v, float radians);
+
+		static const Vector2D left; // { -1, 0 }
+		static const Vector2D right; // { 1, 0 }
+		static const Vector2D up; // { 0, -1 }
+		static const Vector2D down; // { 0, 1 }
+		static const Vector2D forward; // { 1, 0 }
 	};
 
-	float Vector2D::Length() const
+	inline float Vector2D::Length() const
 	{
 		return std::sqrt((x * x) + (y * y));
 	}
 
-	float Vector2D::LengthSquared() const
+	inline float Vector2D::LengthSquared() const
 	{
 		return (x * x) + (y * y);
 	}
 
-	float Vector2D::Distance(const Vector2D& v1, const Vector2D& v2)
+	inline float Vector2D::Distance(const Vector2D& v1, const Vector2D& v2)
 	{
 		Vector2D v = v1 - v2;
 		return v.Length();
 	}
 	
-	Vector2D Vector2D::Normalized() const
+	inline Vector2D Vector2D::Normalized() const
 	{
 		float length = Length();
 		Vector2D n = (length == 0.0f) ? Vector2D{ 0.0f, 0.0f } : *this / length;
 		return n;
 	}
 	
-	void Vector2D::Normalize()
+	inline void Vector2D::Normalize()
 	{
 		float length = Length();
 		if (length == 0.0f)
