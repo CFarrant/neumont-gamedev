@@ -8,6 +8,7 @@ namespace nc
 	const Vector2D Vector2D::up = Vector2D{ 0, -1 };
 	const Vector2D Vector2D::down = Vector2D{ 0, 1 };
 	const Vector2D Vector2D::forward = Vector2D{ 1, 0 };
+
 	std::istream & operator>>(std::istream & stream, Vector2D & v)
 	{
 		std::string line;

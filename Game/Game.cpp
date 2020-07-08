@@ -5,21 +5,17 @@
 #include "core.h"
 #include "Math/Math.h"
 #include "Math/Random.h"
-#include "Math/Vector2D.h"
+#include "Math/Transform.h"
+//#include "Math/Vector2D.h"
 #include "Math/Color.h"
 #include "Graphics/Shape.h"
+#include "Object/Actor.h"
 
 const size_t NUM_POINTS = 40;
 float speed = 300.0;
 
-//std::vector<nc::Vector2D> points = { {0, 0}, {0, -3}, {1, -4}, {2, -3}, {3, -6}, {4, -3}, {5, -4}, {6, -3}, {6, 0}, {5, -2}, {3, -1}, {1, -2}, {0, 0} };
-//nc::Color color = { 0.75f, 0.0f, 0.0f };
-//nc::Shape ship(points, color);
-nc::Shape ship;
-
-nc::Vector2D position{ 400, 300 };
-float scale = 4.0f;
-float angle = 0.0f;
+nc::Actor player;
+nc::Actor enemy;
 
 float frameTime;
 float roundTime;
@@ -46,12 +42,12 @@ bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 	nc::Vector2D force{0,0};
 	if (Core::Input::IsPressed('W')) { force = nc::Vector2D::up * speed * dt; }
 	nc::Vector2D direction = force;
-	direction = nc::Vector2D::Rotate(direction, angle);
-	position = position + direction;
+	direction = nc::Vector2D::Rotate(direction, player.GetTransform().angle);
+	player.GetTransform().position = player.GetTransform().position + direction;
 	
 	//rotate
-	if (Core::Input::IsPressed('A')) { angle = angle - (dt * 3.0f); }
-	if (Core::Input::IsPressed('D')) { angle = angle + (dt * 3.0f); }
+	if (Core::Input::IsPressed('A')) { player.GetTransform().angle = player.GetTransform().angle - (dt * 3.0f); }
+	if (Core::Input::IsPressed('D')) { player.GetTransform().angle = player.GetTransform().angle + (dt * 3.0f); }
 
 	//translate
 	//if (Core::Input::IsPressed('A')) { position += nc::Vector2D::left * speed * dt; }
@@ -70,13 +66,15 @@ bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 
 void Draw(Core::Graphics& graphics)
 {
+	graphics.SetColor(nc::Color{1,1,1});
 	graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
 	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000).c_str());
 
 	if (gameOver) { graphics.DrawString(400, 300, "Game Over"); }
 
-	ship.Draw(graphics, position, scale, angle);
+	player.Draw(graphics);
+	enemy.Draw(graphics);
 }
 
 int main()
@@ -85,7 +83,8 @@ int main()
 	//std::cout << ticks / 1000 / 60 / 60 << std::endl;
 	prevTime = GetTickCount();
 
-	ship.Load("ship.txt");
+	player.Load("player.actor");
+	enemy.Load("enemy.actor");
 
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);
