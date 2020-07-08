@@ -19,9 +19,7 @@ bool nc::Shape::Load(const std::string & filename)
 		success = true;
 
 		//read color (stream >> m_color)
-		Color color;
-		stream >> color;
-		this->SetColor(color);
+		stream >> m_color;
 
 		//read points (stream >> m_points)
 		while (!stream.eof())
