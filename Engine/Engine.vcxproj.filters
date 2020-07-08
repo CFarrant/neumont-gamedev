@@ -55,5 +55,8 @@
     <ClCompile Include="Math\Vector2D.cpp">
       <Filter>Math</Filter>
     </ClCompile>
+    <ClCompile Include="Math\Color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

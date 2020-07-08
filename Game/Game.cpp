@@ -12,21 +12,34 @@
 const size_t NUM_POINTS = 40;
 float speed = 300.0;
 
-std::vector<nc::Vector2D> points = { {0, 0}, {0, -3}, {1, -4}, {2, -3}, {3, -6}, {4, -3}, {5, -4}, {6, -3}, {6, 0}, {5, -2}, {3, -1}, {1, -2}, {0, 0} };
-nc::Color color = { 0.75f, 0.0f, 0.0f };
-nc::Shape ship(points, color);
+//std::vector<nc::Vector2D> points = { {0, 0}, {0, -3}, {1, -4}, {2, -3}, {3, -6}, {4, -3}, {5, -4}, {6, -3}, {6, 0}, {5, -2}, {3, -1}, {1, -2}, {0, 0} };
+//nc::Color color = { 0.75f, 0.0f, 0.0f };
+//nc::Shape ship(points, color);
+nc::Shape ship;
 
 nc::Vector2D position{ 400, 300 };
 float scale = 4.0f;
 float angle = 0.0f;
 
-float frametime;
+float frameTime;
+float roundTime;
 using timer_t = DWORD;
 timer_t prevTime, deltaTime;
+bool gameOver{ false };
 
 bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 {
-	frametime = dt;
+	// dt = current frame time - previous frame time
+	DWORD time = GetTickCount();
+	deltaTime = time - prevTime;
+	prevTime = time;
+
+	frameTime = dt;
+	roundTime += dt;
+	//if (roundTime >= 5) { gameOver = true; }
+
+	//dt = dt * 0.25f;
+	if (gameOver) { dt = 0; }
 
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
@@ -57,8 +70,12 @@ bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 
 void Draw(Core::Graphics& graphics)
 {
-	graphics.DrawString(10, 10, std::to_string(frametime).c_str());
-	graphics.DrawString(10, 20, std::to_string(1.0f / frametime).c_str());
+	graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
+	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
+	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000).c_str());
+
+	if (gameOver) { graphics.DrawString(400, 300, "Game Over"); }
+
 	ship.Draw(graphics, position, scale, angle);
 }
 
@@ -66,6 +83,9 @@ int main()
 {
 	//DWORD ticks = GetTickCount(); // how many ticks in a second
 	//std::cout << ticks / 1000 / 60 / 60 << std::endl;
+	prevTime = GetTickCount();
+
+	ship.Load("ship.txt");
 
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);

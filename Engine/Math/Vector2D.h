@@ -1,4 +1,6 @@
 #pragma once
+#include <istream>
+#include <string>
 
 namespace nc
 {
@@ -36,6 +38,8 @@ namespace nc
 		Vector2D& operator /= (float s) { x /= s; y /= s; return *this; }
 
 		Vector2D operator - () { return Vector2D{ -x, -y }; }
+
+		friend std::istream& operator >> (std::istream& stream, Vector2D& v);
 
 		float Length() const;
 		float LengthSquared() const;

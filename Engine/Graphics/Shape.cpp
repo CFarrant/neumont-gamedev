@@ -1,16 +1,43 @@
 #include "pch.h"
 #include "Shape.h"
+#include <fstream>
 
-nc::Shape::Shape()
-{
-	this->m_color = nc::Color{ 0,1,1 };
-	this->m_points = std::vector<nc::Vector2D>{ {0,-3}, {3,3}, {0,1}, {-3,3}, {0,-3} };
-}
+nc::Shape::Shape() {}
 
 nc::Shape::Shape(const std::vector<nc::Vector2D>& points, const Color& color)
 {
 	this->m_points = points;
 	this->m_color = color;
+}
+
+bool nc::Shape::Load(const std::string & filename)
+{
+	bool success = false;
+	std::ifstream stream(filename);
+	if (stream.is_open())
+	{
+		success = true;
+
+		//read color (stream >> m_color)
+		Color color;
+		stream >> color;
+		this->SetColor(color);
+
+		//read points (stream >> m_points)
+		while (!stream.eof())
+		{
+			Vector2D point;
+			stream >> point;
+			if (!stream.eof())
+			{
+				m_points.push_back(point);
+			}
+		}
+
+		stream.close();
+	}
+
+	return success;
 }
 
 void nc::Shape::Draw(Core::Graphics& graphics, nc::Vector2D position, float scale, float angle)
