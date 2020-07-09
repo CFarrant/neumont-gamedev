@@ -17,6 +17,8 @@ float speed = 300.0;
 nc::Actor player;
 nc::Actor enemy;
 
+float t{ 0 };
+
 float frameTime;
 float roundTime;
 using timer_t = DWORD;
@@ -29,6 +31,8 @@ bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 	DWORD time = GetTickCount();
 	deltaTime = time - prevTime;
 	prevTime = time;
+
+	t = t + (dt * 5.0f);
 
 	frameTime = dt;
 	roundTime += dt;
@@ -46,8 +50,10 @@ bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 	player.GetTransform().position = player.GetTransform().position + direction;
 	
 	//rotate
-	if (Core::Input::IsPressed('A')) { player.GetTransform().angle = player.GetTransform().angle - (dt * 3.0f); }
-	if (Core::Input::IsPressed('D')) { player.GetTransform().angle = player.GetTransform().angle + (dt * 3.0f); }
+	if (Core::Input::IsPressed('A')) { player.GetTransform().angle = player.GetTransform().angle - (dt * nc::DegreesToRadians(360.0f)); }
+	if (Core::Input::IsPressed('D')) { player.GetTransform().angle = player.GetTransform().angle + (dt * nc::DegreesToRadians(360.0f)); }
+
+	player.GetTransform().position = nc::Clamp(player.GetTransform().position, { 0,0 }, { 800,600 });
 
 	//translate
 	//if (Core::Input::IsPressed('A')) { position += nc::Vector2D::left * speed * dt; }
@@ -70,6 +76,13 @@ void Draw(Core::Graphics& graphics)
 	graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
 	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000).c_str());
+
+	float v = (std::sin(t) + 1.0f) * 0.5f;
+
+	nc::Vector2D p = nc::Lerp(nc::Vector2D{ 400,300 }, nc::Vector2D{ 400,100 }, v);
+	nc::Color c = nc::Lerp(nc::Color{ 0,0,1 }, nc::Color{ 1,0,0 }, v);
+	graphics.SetColor(c);
+	graphics.DrawString(p.x, p.y, "The Last Starfighter!");
 
 	if (gameOver) { graphics.DrawString(400, 300, "Game Over"); }
 
