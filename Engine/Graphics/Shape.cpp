@@ -21,14 +21,16 @@ bool nc::Shape::Load(const std::string & filename)
 
 		stream >> m_color; //read color
 
-		while (!stream.eof()) //read points
+		std::string line; //read number of points
+		std::getline(stream, line);
+		size_t size;
+		size = stoi(line);
+
+		for (size_t i = 0; i < size; i++) //read points
 		{
 			Vector2D point;
 			stream >> point;
-			if (!stream.eof())
-			{
-				m_points.push_back(point);
-			}
+			m_points.push_back(point);
 		}
 
 		stream.close();

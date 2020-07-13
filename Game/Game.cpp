@@ -3,19 +3,18 @@
 
 #include "pch.h"
 #include "core.h"
-#include "Math/Math.h"
+#include "Actors/Player.h"
+#include "Actors/Enemy.h"
 #include "Math/Random.h"
 #include "Math/Transform.h"
-//#include "Math/Vector2D.h"
 #include "Math/Color.h"
 #include "Graphics/Shape.h"
-#include "Object/Actor.h"
 
-const size_t NUM_POINTS = 40;
-float speed = 300.0;
+float thrust = 300.0;
+nc::Vector2D velocity;
 
-nc::Actor player;
-nc::Actor enemy;
+Player player;
+Enemy enemy;
 
 float t{ 0 };
 
@@ -35,32 +34,22 @@ bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
 	t = t + (dt * 5.0f);
 
 	frameTime = dt;
-	roundTime += dt;
+	//roundTime += dt;
 	//if (roundTime >= 5) { gameOver = true; }
-
 	//dt = dt * 0.25f;
-	if (gameOver) { dt = 0; }
+	//if (gameOver) { dt = 0; }
 
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
-	nc::Vector2D force{0,0};
-	if (Core::Input::IsPressed('W')) { force = nc::Vector2D::up * speed * dt; }
-	nc::Vector2D direction = force;
-	direction = nc::Vector2D::Rotate(direction, player.GetTransform().angle);
-	player.GetTransform().position = player.GetTransform().position + direction;
-	
-	//rotate
-	if (Core::Input::IsPressed('A')) { player.GetTransform().angle = player.GetTransform().angle - (dt * nc::DegreesToRadians(360.0f)); }
-	if (Core::Input::IsPressed('D')) { player.GetTransform().angle = player.GetTransform().angle + (dt * nc::DegreesToRadians(360.0f)); }
-
-	player.GetTransform().position = nc::Clamp(player.GetTransform().position, { 0,0 }, { 800,600 });
-
-	//translate
-	//if (Core::Input::IsPressed('A')) { position += nc::Vector2D::left * speed * dt; }
-	//if (Core::Input::IsPressed('D')) { position += nc::Vector2D::right * speed * dt; }
-
 	int x, y;
 	Core::Input::GetMousePos(x, y);
+
+	player.Update(dt);
+	enemy.Update(dt);
+
+	//translate
+	//if (Core::Input::IsPressed('A')) { position += nc::Vector2D::left * thrust * dt; }
+	//if (Core::Input::IsPressed('D')) { position += nc::Vector2D::right * thrust * dt; }
 
 	//nc::Vector2D target = nc::Vector2D{ x,y };
 	//nc::Vector2D direction = target - position; // (head <- tail)
@@ -77,14 +66,13 @@ void Draw(Core::Graphics& graphics)
 	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
 	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000).c_str());
 
-	float v = (std::sin(t) + 1.0f) * 0.5f;
+	//float v = (std::sin(t) + 1.0f) * 0.5f;
+	//nc::Vector2D p = nc::Lerp(nc::Vector2D{ 400,300 }, nc::Vector2D{ 400,100 }, v);
+	//nc::Color c = nc::Lerp(nc::Color{ 0,0,1 }, nc::Color{ 1,0,0 }, v);
+	//graphics.SetColor(c);
+	//graphics.DrawString(p.x, p.y, "The Last Starfighter!");
 
-	nc::Vector2D p = nc::Lerp(nc::Vector2D{ 400,300 }, nc::Vector2D{ 400,100 }, v);
-	nc::Color c = nc::Lerp(nc::Color{ 0,0,1 }, nc::Color{ 1,0,0 }, v);
-	graphics.SetColor(c);
-	graphics.DrawString(p.x, p.y, "The Last Starfighter!");
-
-	if (gameOver) { graphics.DrawString(400, 300, "Game Over"); }
+	//if (gameOver) { graphics.DrawString(400, 300, "Game Over"); }
 
 	player.Draw(graphics);
 	enemy.Draw(graphics);
@@ -98,6 +86,7 @@ int main()
 
 	player.Load("player.actor");
 	enemy.Load("enemy.actor");
+	enemy.SetTarget(&player);
 
 	char name[] = "CSC196";
 	Core::Init(name, 800, 600);

@@ -21,15 +21,20 @@ bool nc::Actor::Load(const std::string & filename)
 	{
 		success = true;
 
-		stream >> m_transform; //read transform
-
-		std::string shapename;
-		stream >> shapename; //read ship
-		m_shape.Load(shapename);
+		Load(stream);
 
 		stream.close();
 	}
 	return success;
+}
+
+void nc::Actor::Load(std::istream & stream)
+{
+	stream >> m_transform;
+
+	std::string shapename;
+	stream >> shapename;
+	m_shape.Load(shapename);
 }
 
 void nc::Actor::Update(float dt)
