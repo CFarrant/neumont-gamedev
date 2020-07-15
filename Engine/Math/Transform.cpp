@@ -16,4 +16,12 @@ namespace nc
 
 		return stream;
 	}
+	void Transform::Update()
+	{
+		Matrix3D mxs; mxs.Scale(scale); //Scale
+		Matrix3D mxr; mxr.Rotate(angle); //Rotate
+		Matrix3D mxt; mxt.Translate(position); //Translate
+
+		matrix = mxs * mxr * mxt; //Scale & Rotate
+	}
 }

@@ -46,4 +46,6 @@ void Player::Update(float dt)
 	if (m_transform.position.x < 0) { m_transform.position.x = 800; }
 	if (m_transform.position.y > 600) { m_transform.position.y = 0; }
 	if (m_transform.position.y < 0) { m_transform.position.y = 600; }
+
+	m_transform.Update();
 }

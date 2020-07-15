@@ -64,7 +64,18 @@ void nc::Shape::Draw(Core::Graphics& graphics, nc::Vector2D position, float scal
 
 void nc::Shape::Draw(Core::Graphics & graphics, const Transform & transform)
 {
-	Draw(graphics, transform.position, transform.scale, transform.angle);
+	graphics.SetColor(this->m_color);
+
+	for (size_t i = 0; i < this->m_points.size() - 1; i++)
+	{
+		nc::Vector2D p1 = this->m_points[i];
+		nc::Vector2D p2 = this->m_points[i + 1];
+
+		//scale, rotate & translate
+		p1 = p1 * transform.matrix; p2 = p2 * transform.matrix;
+
+		graphics.DrawLine(p1.x, p1.y, p2.x, p2.y); //drawing shape
+	}
 }
 
 void nc::Shape::SetColor(Color color)
