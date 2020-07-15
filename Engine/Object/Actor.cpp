@@ -33,7 +33,8 @@ void nc::Actor::Load(std::istream & stream)
 	stream >> m_transform;
 
 	std::string shapename;
-	stream >> shapename;
+	std::getline(stream, shapename);
+
 	m_shape.Load(shapename);
 }
 

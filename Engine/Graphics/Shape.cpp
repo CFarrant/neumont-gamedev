@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "../Math/Matrix2D.h"
 #include "Shape.h"
 #include <fstream>
 
@@ -42,16 +43,22 @@ bool nc::Shape::Load(const std::string & filename)
 void nc::Shape::Draw(Core::Graphics& graphics, nc::Vector2D position, float scale, float angle)
 {
 	graphics.SetColor(this->m_color);
+
+	Matrix2D mxs; //Scale
+	mxs.Scale(scale);
+	Matrix2D mxr; // Rotate
+	mxr.Rotate(angle);
+
+	Matrix2D mx = mxs * mxr; //Scale & Rotate
+
 	for (size_t i = 0; i < this->m_points.size() - 1; i++)
 	{
 		nc::Vector2D p1 = this->m_points[i];
 		nc::Vector2D p2 = this->m_points[i + 1];
 
-		p1 = p1 * scale; //scaling shape
-		p2 = p2 * scale; //scaling shape
-
-		p1 = nc::Vector2D::Rotate(p1, angle); //rotating shape
-		p2 = nc::Vector2D::Rotate(p2, angle); //rotating shape
+		//scale & rotate
+		p1 = p1 * mx; //scaling shape
+		p2 = p2 * mx; //scaling shape
 
 		p1 = p1 + position; //translating shape
 		p2 = p2 + position; //translating shape

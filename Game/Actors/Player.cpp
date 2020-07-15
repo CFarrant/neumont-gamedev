@@ -14,7 +14,6 @@ bool Player::Load(const std::string & filename)
 		Actor::Load(stream);
 
 		std::string line;
-		std::getline(stream, line); //skip ship filename
 		std::getline(stream, line); //stream into thrust
 		m_thrust = stof(line);
 
