@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "../Math/Matrix2D.h"
+#include "../Math/Matrix3D.h"
 #include "Shape.h"
 #include <fstream>
 
@@ -44,24 +44,19 @@ void nc::Shape::Draw(Core::Graphics& graphics, nc::Vector2D position, float scal
 {
 	graphics.SetColor(this->m_color);
 
-	Matrix2D mxs; //Scale
-	mxs.Scale(scale);
-	Matrix2D mxr; // Rotate
-	mxr.Rotate(angle);
+	Matrix3D mxs; mxs.Scale(scale); //Scale
+	Matrix3D mxr; mxr.Rotate(angle); //Rotate
+	Matrix3D mxt; mxt.Translate(position); //Translate
 
-	Matrix2D mx = mxs * mxr; //Scale & Rotate
+	Matrix3D mx = mxs * mxr * mxt; //Scale & Rotate
 
 	for (size_t i = 0; i < this->m_points.size() - 1; i++)
 	{
 		nc::Vector2D p1 = this->m_points[i];
 		nc::Vector2D p2 = this->m_points[i + 1];
 
-		//scale & rotate
-		p1 = p1 * mx; //scaling shape
-		p2 = p2 * mx; //scaling shape
-
-		p1 = p1 + position; //translating shape
-		p2 = p2 + position; //translating shape
+		//scale, rotate & translate
+		p1 = p1 * mx; p2 = p2 * mx;
 
 		graphics.DrawLine(p1.x, p1.y, p2.x, p2.y); //drawing shape
 	}

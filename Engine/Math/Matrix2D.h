@@ -76,7 +76,5 @@ namespace nc
 
 			return result;
 		}
-
-
 	};
 }
