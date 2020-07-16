@@ -9,52 +9,74 @@
 #include "Math/Transform.h"
 #include "Math/Color.h"
 #include "Graphics/Shape.h"
+#include <string>
+#include <list>
 
-float thrust = 300.0;
-nc::Vector2D velocity;
-
-Player player;
-Enemy enemy;
-
-float t{ 0 };
-
+std::list<nc::Actor*> actors;
 float frameTime;
-float roundTime;
-using timer_t = DWORD;
-timer_t prevTime, deltaTime;
-bool gameOver{ false };
+float spawnTimer{ 0 };
 
-bool Update(float dt) // delta time (60 fps) (1 / 60 = 0.016)
+template <typename T>
+nc::Actor* GetActor()
 {
-	// dt = current frame time - previous frame time
-	DWORD time = GetTickCount();
-	deltaTime = time - prevTime;
-	prevTime = time;
+	nc::Actor* result{ nullptr };
 
-	t = t + (dt * 5.0f);
+	for (nc::Actor* actor : actors)
+	{
+		result = dynamic_cast<T*>(actor);
+		if (result) { break; }
+	}
 
+	return result;
+}
+
+template <typename T>
+std::vector<nc::Actor*> GetActors()
+{
+	std::vector<nc::Actor*> results;
+
+	for (nc::Actor* actor : actors)
+	{
+		T* result = dynamic_cast<T*>(actor);
+		if (result) { results.push_back(result); }
+	}
+
+	return results;
+}
+
+bool Update(float dt)
+{
 	frameTime = dt;
-	//roundTime += dt;
-	//if (roundTime >= 5) { gameOver = true; }
-	//dt = dt * 0.25f;
-	//if (gameOver) { dt = 0; }
 
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
 
-	int x, y;
-	Core::Input::GetMousePos(x, y);
+	if (Core::Input::IsPressed(VK_SPACE))
+	{
+		auto removeActors = GetActors<Enemy>();
+		for (auto actor : removeActors)
+		{
+			auto iter = std::find(actors.begin(), actors.end(), actor);
+			delete* iter;
+			actors.erase(iter);
+		}
+	}
 
-	player.Update(dt);
-	enemy.Update(dt);
+	spawnTimer += dt;
+	if (spawnTimer >= 3) 
+	{
+		spawnTimer = 0.0f;
+		nc::Actor* enemy = new Enemy();
+		enemy->Load("enemy.actor");
+		dynamic_cast<Enemy*>(enemy)->SetTarget(GetActor<Player>());
+		dynamic_cast<Enemy*>(enemy)->SetThrust(nc::Random(50, 100));
+		enemy->GetTransform().position = nc::Vector2D{ nc::Random(0,800), nc::Random(0,600) };
+		actors.push_back(enemy);
+	}
 
-	//translate
-	//if (Core::Input::IsPressed('A')) { position += nc::Vector2D::left * thrust * dt; }
-	//if (Core::Input::IsPressed('D')) { position += nc::Vector2D::right * thrust * dt; }
-
-	//nc::Vector2D target = nc::Vector2D{ x,y };
-	//nc::Vector2D direction = target - position; // (head <- tail)
-
-	//position = position + direction.Normalized() * 5.0f;
+	for(nc::Actor* actor : actors)
+	{
+		actor->Update(dt);
+	}
 
 	return quit;
 }
@@ -64,32 +86,31 @@ void Draw(Core::Graphics& graphics)
 	graphics.SetColor(nc::Color{1,1,1});
 	graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
-	graphics.DrawString(10, 30, std::to_string(deltaTime / 1000).c_str());
 
-	//float v = (std::sin(t) + 1.0f) * 0.5f;
-	//nc::Vector2D p = nc::Lerp(nc::Vector2D{ 400,300 }, nc::Vector2D{ 400,100 }, v);
-	//nc::Color c = nc::Lerp(nc::Color{ 0,0,1 }, nc::Color{ 1,0,0 }, v);
-	//graphics.SetColor(c);
-	//graphics.DrawString(p.x, p.y, "The Last Starfighter!");
-
-	//if (gameOver) { graphics.DrawString(400, 300, "Game Over"); }
-
-	player.Draw(graphics);
-	enemy.Draw(graphics);
+	for (nc::Actor* actor : actors)
+	{
+		actor->Draw(graphics);
+	}
 }
 
 int main()
 {
-	//DWORD ticks = GetTickCount(); // how many ticks in a second
-	//std::cout << ticks / 1000 / 60 / 60 << std::endl;
-	prevTime = GetTickCount();
-
-	player.Load("player.actor");
-	enemy.Load("enemy.actor");
-	enemy.SetTarget(&player);
+	nc::Actor* player = new Player();
+	player->Load("player.actor");
+	actors.push_back(player);
+	
+	for (int i = 0; i < 5; i++)
+	{
+		nc::Actor* enemy = new Enemy();
+		enemy->Load("enemy.actor");
+		dynamic_cast<Enemy*>(enemy)->SetTarget(player);
+		dynamic_cast<Enemy*>(enemy)->SetThrust(nc::Random(50, 100));
+		enemy->GetTransform().position = nc::Vector2D{ nc::Random(0,800), nc::Random(0,600) };
+		actors.push_back(enemy);
+	}
 
 	char name[] = "CSC196";
-	Core::Init(name, 800, 600);
+	Core::Init(name, 800, 600, 90);
 	Core::RegisterUpdateFn(Update);
 	Core::RegisterDrawFn(Draw);
 
