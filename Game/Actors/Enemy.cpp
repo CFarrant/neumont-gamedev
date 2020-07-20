@@ -30,3 +30,11 @@ void Enemy::Update(float dt)
 
 	m_transform.Update();
 }
+
+void Enemy::OnCollision(Actor * actor)
+{
+	if (actor->GetType() == eType::PROJECTILE) 
+	{
+		m_destroy = true;
+	}
+}

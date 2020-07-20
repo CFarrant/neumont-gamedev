@@ -5,6 +5,7 @@
 #include "core.h"
 #include "Actors/Player.h"
 #include "Actors/Enemy.h"
+#include "Actors/Projectile.h"
 #include "Math/Random.h"
 #include "Math/Transform.h"
 #include "Math/Color.h"
@@ -22,15 +23,6 @@ bool Update(float dt)
 	frameTime = dt;
 
 	bool quit = Core::Input::IsPressed(Core::Input::KEY_ESCAPE);
-
-	if (Core::Input::IsPressed(VK_SPACE))
-	{
-		auto removeActors = scene.GetActors<Enemy>();
-		for (auto actor : removeActors)
-		{
-			scene.RemoveActor(actor);
-		}
-	}
 
 	spawnTimer += dt;
 	if (spawnTimer >= 3)
