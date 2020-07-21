@@ -6,6 +6,7 @@
 #include "Actors/Player.h"
 #include "Actors/Enemy.h"
 #include "Actors/Projectile.h"
+#include "Graphics/ParticleSystem.h"
 #include "Math/Random.h"
 #include "Math/Transform.h"
 #include "Math/Color.h"
@@ -15,6 +16,7 @@
 #include <list>
 
 nc::Scene scene;
+nc::ParticleSystem particleSystem;
 float frameTime;
 float spawnTimer{ 0 };
 
@@ -36,6 +38,10 @@ bool Update(float dt)
 		scene.AddActor(enemy);
 	}
 
+	Player* player = scene.GetActor<Player>();
+	particleSystem.Create(player->GetTransform().position, player->GetTransform().angle, 20, 1, nc::Color{ 1,1,1 }, 1, 100, 200);
+
+	particleSystem.Update(dt);
 	scene.Update(dt);
 
 	return quit;
@@ -47,12 +53,14 @@ void Draw(Core::Graphics& graphics)
 	graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
 
+	particleSystem.Draw(graphics);
 	scene.Draw(graphics);
 }
 
 int main()
 {
 	scene.Startup();
+	particleSystem.Startup();
 
 	nc::Actor* player = new Player();
 	player->Load("player.actor");
@@ -77,4 +85,5 @@ int main()
 	Core::Shutdown();
 
 	scene.Shutdown();
+	particleSystem.Shutdown();
 }

@@ -16,31 +16,8 @@ namespace nc
 		void AddActor(class Actor* actor);
 		void RemoveActor(class Actor* actor);
 
-		template <typename T>
-		Actor* GetActor() {
-			nc::Actor* result{ nullptr };
+		template <typename T>		T* GetActor()		{			T* actor = { nullptr };			for (Actor* a : m_actors)			{				actor = dynamic_cast<T*>(a);				if (actor) break;			}			return actor;		}		template <typename T>		std::vector<T*> GetActors()		{			std::vector<T*> actors;			for (Actor* a : m_actors)			{				T* actor = dynamic_cast<T*>(a);				if (actor)				{					actors.push_back(actor);				}			}			return actors;		}
 
-			for (nc::Actor* actor : m_actors)
-			{
-				result = dynamic_cast<T*>(actor);
-				if (result) { break; }
-			}
-
-			return result;
-		}
-
-		template <typename T>
-		std::vector<Actor*> GetActors() {
-			std::vector<nc::Actor*> results;
-
-			for (nc::Actor* actor : m_actors)
-			{
-				T* result = dynamic_cast<T*>(actor);
-				if (result) { results.push_back(result); }
-			}
-
-			return results;
-		}
 
 	private:
 		std::list<class Actor*> m_actors;
