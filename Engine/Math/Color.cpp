@@ -6,6 +6,7 @@ const nc::Color nc::Color::red{ 1, 0, 0 };
 const nc::Color nc::Color::green{ 0, 1, 0 };
 const nc::Color nc::Color::blue{ 0, 0, 1 };
 const nc::Color nc::Color::yellow{ 1, 1, 0 };
+const nc::Color nc::Color::orange{ 1, 0.65f, 0 };
 
 std::istream & nc::operator>>(std::istream & stream, Color & c)
 {

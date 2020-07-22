@@ -27,7 +27,7 @@ void nc::Scene::Update(float dt)
 		for (size_t j = i + 1; j < actors.size(); j++)
 		{
 			float distance = Vector2D::Distance(actors[i]->GetTransform().position, actors[j]->GetTransform().position);
-			if (distance <= 10)
+			if (distance <= (actors[i]->GetRadius() + actors[j]->GetRadius()))
 			{
 				actors[i]->OnCollision(actors[j]);
 				actors[j]->OnCollision(actors[i]);

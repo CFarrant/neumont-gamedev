@@ -19,11 +19,14 @@ namespace nc
 		void Draw(Core::Graphics& graphics, nc::Vector2D position, float scale = 1.0f, float angle = 0.0f);
 		void Draw(Core::Graphics& graphics, const Transform& transform);
 
+		const float GetRadius() { return m_radius; }
+
 		void SetColor(Color color);
 		const Color& GetColor() const;
 
 	private:
 		std::vector<nc::Vector2D> m_points;
 		Color m_color;
+		float m_radius;
 	};
 }

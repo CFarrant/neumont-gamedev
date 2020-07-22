@@ -23,3 +23,5 @@ namespace nc
 		size_t m_size;
 	};
 }
+
+extern nc::ParticleSystem g_particleSystem;

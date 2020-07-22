@@ -16,7 +16,6 @@
 #include <list>
 
 nc::Scene scene;
-nc::ParticleSystem particleSystem;
 float frameTime;
 float spawnTimer{ 0 };
 
@@ -38,17 +37,18 @@ bool Update(float dt)
 		scene.AddActor(enemy);
 	}
 
-	Player* player = scene.GetActor<Player>();
-	particleSystem.Create(player->GetTransform().position, player->GetTransform().angle, 20, 1, nc::Color::white, 1, 100, 200);
-
 	if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
 	{
 		int x, y;
 		Core::Input::GetMousePos(x, y);
-		particleSystem.Create(nc::Vector2D{x, y}, 0, 180, 30, nc::Color::red, 1, 100, 200);
+
+		nc::Color colors[] = { nc::Color::white, nc::Color::red, nc::Color::yellow, nc::Color::orange };
+		nc::Color color = colors[rand() % 4];
+
+		g_particleSystem.Create(nc::Vector2D{x, y}, 0, 180, 30, color, 1, 100, 200);
 	}
 
-	particleSystem.Update(dt);
+	g_particleSystem.Update(dt);
 	scene.Update(dt);
 
 	return quit;
@@ -60,14 +60,14 @@ void Draw(Core::Graphics& graphics)
 	graphics.DrawString(10, 10, std::to_string(frameTime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f / frameTime).c_str());
 
-	particleSystem.Draw(graphics);
+	g_particleSystem.Draw(graphics);
 	scene.Draw(graphics);
 }
 
 int main()
 {
 	scene.Startup();
-	particleSystem.Startup();
+	g_particleSystem.Startup();
 
 	nc::Actor* player = new Player();
 	player->Load("player.actor");
@@ -92,5 +92,5 @@ int main()
 	Core::Shutdown();
 
 	scene.Shutdown();
-	particleSystem.Shutdown();
+	g_particleSystem.Shutdown();
 }

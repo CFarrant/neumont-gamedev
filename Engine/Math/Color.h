@@ -49,6 +49,7 @@ namespace nc
 		static const Color green;
 		static const Color blue;
 		static const Color yellow;
+		static const Color orange;
 	};
 
 	inline COLORREF Color::Pack888() const
