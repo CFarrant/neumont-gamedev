@@ -39,7 +39,14 @@ bool Update(float dt)
 	}
 
 	Player* player = scene.GetActor<Player>();
-	particleSystem.Create(player->GetTransform().position, player->GetTransform().angle, 20, 1, nc::Color{ 1,1,1 }, 1, 100, 200);
+	particleSystem.Create(player->GetTransform().position, player->GetTransform().angle, 20, 1, nc::Color::white, 1, 100, 200);
+
+	if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
+	{
+		int x, y;
+		Core::Input::GetMousePos(x, y);
+		particleSystem.Create(nc::Vector2D{x, y}, 0, 180, 30, nc::Color::red, 1, 100, 200);
+	}
 
 	particleSystem.Update(dt);
 	scene.Update(dt);

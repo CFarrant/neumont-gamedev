@@ -5,8 +5,8 @@
 
 void nc::ParticleSystem::Startup()
 {
-	m_particles = new Particle[300];
-	m_size = 300;
+	m_particles = new Particle[3000];
+	m_size = 3000;
 }
 
 void nc::ParticleSystem::Shutdown()
