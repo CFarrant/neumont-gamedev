@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "Object/Scene.h"
+#include "../Game.h"
 #include "Math/Math.h"
 #include "Graphics/ParticleSystem.h"
 #include <fstream>
@@ -71,4 +72,12 @@ void Player::Update(float dt)
 	}
 
 	m_transform.Update();
+}
+
+void Player::OnCollision(Actor * actor)
+{
+	if (actor->GetType() == eType::ENEMY)
+	{
+		m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+	}
 }

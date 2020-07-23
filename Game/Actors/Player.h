@@ -12,6 +12,8 @@ public:
 	virtual bool Load(const std::string& filename) override;
 	virtual void Update(float dt) override;
 
+	virtual void OnCollision(Actor* actor);
+
 protected:
 	float m_thrust;
 	float m_rotationRate;
