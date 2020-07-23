@@ -25,7 +25,7 @@ public:
 	void SetState(eState state) { m_state = state; }
 
 protected:
-	eState m_state{ eState::TITLE };
+	eState m_state{ eState::INIT };
 	int m_lives{ 3 };
 	int m_score{ 0 };
 

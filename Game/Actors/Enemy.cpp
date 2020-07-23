@@ -1,5 +1,6 @@
 #include "Enemy.h"
 #include "Graphics/ParticleSystem.h"
+#include "Audio/AudioSystem.h"
 #include "Object/Scene.h"
 #include "../Game.h"
 #include "Math/Math.h"
@@ -46,5 +47,6 @@ void Enemy::OnCollision(Actor * actor)
 		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::orange, 1, 100, 200);
 		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::yellow, 1, 100, 200);
 		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::white, 1, 100, 200);
+		g_audioSystem.PlayAudio("Explosion");
 	}
 }

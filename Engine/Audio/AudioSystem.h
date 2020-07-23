@@ -20,6 +20,6 @@ namespace nc
 		FMOD::System* m_system;
 		std::map<std::string, FMOD::Sound*> m_sounds;
 	};
-
-	extern nc::AudioSystem g_audioSystem;
 }
+
+extern nc::AudioSystem g_audioSystem;

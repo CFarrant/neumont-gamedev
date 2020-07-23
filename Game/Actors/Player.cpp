@@ -4,6 +4,7 @@
 #include "../Game.h"
 #include "Math/Math.h"
 #include "Graphics/ParticleSystem.h"
+#include "Audio/AudioSystem.h"
 #include <fstream>
 
 bool Player::Load(const std::string & filename)
@@ -37,6 +38,7 @@ void Player::Update(float dt)
 	if (Core::Input::IsPressed(VK_SPACE) && m_fireTimer >= m_fireRate)
 	{
 		m_fireTimer = 0;
+		g_audioSystem.PlayAudio("Laser");
 		nc::Actor* projectile = new Projectile();
 		projectile->Load("projectile.actor");
 		projectile->GetTransform().position = m_transform.position;
@@ -78,6 +80,6 @@ void Player::OnCollision(Actor * actor)
 {
 	if (actor->GetType() == eType::ENEMY)
 	{
-		m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+		//m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
 	}
 }

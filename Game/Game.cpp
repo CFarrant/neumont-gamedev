@@ -3,6 +3,7 @@
 #include "Actors/Enemy.h"
 #include "Actors/Projectile.h"
 #include "Graphics/ParticleSystem.h"
+#include "Audio/AudioSystem.h"
 #include "Math/Random.h"
 #include "Math/Transform.h"
 #include "Math/Color.h"
@@ -12,7 +13,7 @@
 
 void Game::Startup()
 {
-	//g_audioSystem.Startup();
+	g_audioSystem.Startup();
 	g_particleSystem.Startup();
 	m_scene.Startup();
 	m_scene.SetGame(this);
@@ -22,7 +23,7 @@ void Game::Shutdown()
 {
 	m_scene.Shutdown();
 	g_particleSystem.Shutdown();
-	//g_audioSystem.Shutdown();
+	g_audioSystem.Shutdown();
 }
 
 bool Game::Update(float dt)
@@ -34,6 +35,9 @@ bool Game::Update(float dt)
 	switch (m_state)
 	{
 	case Game::eState::INIT:
+		g_audioSystem.AddAudio("Laser", "Laser.wav");
+		g_audioSystem.AddAudio("Explosion", "Explosion.wav");
+		m_state = eState::TITLE;
 		break;
 	case Game::eState::TITLE:
 		if (Core::Input::IsPressed(VK_SPACE))
@@ -91,6 +95,7 @@ bool Game::Update(float dt)
 	}
 
 	g_particleSystem.Update(dt);
+	g_audioSystem.Update(dt);
 
 	return quit;
 }
