@@ -45,28 +45,6 @@ void nc::ParticleSystem::Draw(Core::Graphics & graphics)
 	}
 }
 
-//void nc::ParticleSystem::Create(const Vector2D & position, float angle, float angleRange, size_t count, const Color[] colors, float lifetime, float speedMin, float speedMax)
-//{
-//	for (size_t i = 0; i < count; i++) {
-//		Particle* p = GetFreeParticle();
-//		if (p)
-//		{
-//			p->active = true;
-//			p->lifetime = lifetime;
-//			p->position = position;
-//			p->prevPosition = position;
-//
-//			nc::Color color = colors[rand() % 4];
-//
-//			p->color = color;
-//
-//			float angleRandom = nc::DegreesToRadians(nc::Random(-angleRange, angleRange));
-//			Vector2D direction = Vector2D::Rotate(Vector2D::down, angle + angleRandom);
-//			p->velocity = direction * nc::Random(speedMin, speedMax);
-//		}
-//	}
-//}
-
 void nc::ParticleSystem::Create(const Vector2D & position, float angle, float angleRange, size_t count, const Color color, float lifetime, float speedMin, float speedMax)
 {
 	for (size_t i = 0; i < count; i++) {

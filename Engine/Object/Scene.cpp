@@ -2,10 +2,7 @@
 #include "Scene.h"
 #include "Actor.h"
 
-void nc::Scene::Startup()
-{
-	//nothing
-}
+void nc::Scene::Startup() {}
 
 void nc::Scene::Shutdown()
 {

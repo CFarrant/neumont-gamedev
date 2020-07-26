@@ -14,9 +14,8 @@ namespace nc
 		std::string line;
 		std::getline(stream, line);
 
-		if (line.find("{") != std::string::npos)
+		if (line.find("{") != std::string::npos) // {x, y}
 		{
-			// {0, -3}
 			std::string vx = line.substr(line.find("{") + 1, line.find(",") - line.find("{") - 1);
 			v.x = std::stof(vx);
 

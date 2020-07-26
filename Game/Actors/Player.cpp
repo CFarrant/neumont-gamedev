@@ -49,7 +49,6 @@ void Player::Update(float dt)
 	nc::Vector2D force{ 0,0 };
 	if (Core::Input::IsPressed('W')) { force = nc::Vector2D::up * m_thrust; }
 	force = nc::Vector2D::Rotate(force, m_transform.angle);
-	//force = force + nc::Vector2D{ 0, 200 }; //gravity values
 	m_velocity = m_velocity + (force * dt);
 	m_velocity = m_velocity * 0.99f;
 

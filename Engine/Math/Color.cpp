@@ -13,9 +13,8 @@ std::istream & nc::operator>>(std::istream & stream, Color & c)
 	std::string line;
 	std::getline(stream, line);
 
-	if (line.find("{") != std::string::npos)
+	if (line.find("{") != std::string::npos) // {r, g, b}
 	{
-		// {1, 1, 1}
 		std::string cr = line.substr(line.find("{") + 1, line.find(",") - line.find("{") - 1);
 		c.r = std::stof(cr);
 
