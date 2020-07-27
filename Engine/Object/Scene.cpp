@@ -6,14 +6,7 @@ void nc::Scene::Startup() {}
 
 void nc::Scene::Shutdown()
 {
-	std::vector<Actor*> removeActors = GetActors<Actor>();
-	for (auto actor : removeActors)
-	{
-		auto iter = std::find(this->m_actors.begin(), this->m_actors.end(), actor);
-		delete* iter;
-		this->m_actors.erase(iter);
-	}
-	this->m_actors.clear();
+	RemoveAllActors();
 }
 
 void nc::Scene::Update(float dt)
@@ -71,4 +64,13 @@ void nc::Scene::RemoveActor(Actor * actor)
 		delete* iter;
 		this->m_actors.erase(iter);
 	}
+}
+
+void nc::Scene::RemoveAllActors()
+{
+	for (Actor* actor : m_actors)
+	{
+		delete actor;
+	}
+	m_actors.clear();
 }

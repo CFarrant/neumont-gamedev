@@ -15,6 +15,7 @@ namespace nc
 		Transform(const Vector2D& position, float scale = 1, float angle = 0) : position{ position }, scale{ scale }, angle{ angle } {}
 
 		void Update();
+		void Update(const Matrix3D pmx);
 
 		friend std::istream& operator >> (std::istream& stream, Transform& t);
 	};

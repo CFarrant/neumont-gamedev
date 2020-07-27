@@ -10,6 +10,8 @@ public:
 		INIT,
 		TITLE,
 		START_GAME,
+		PLAYER_DEAD,
+		GAME_WAIT,
 		GAME,
 		GAME_OVER
 	};
@@ -33,4 +35,5 @@ protected:
 
 	float m_frameTime;
 	float m_spawnTimer{ 0 };
+	float m_stateTimer;
 };

@@ -18,6 +18,7 @@ namespace nc
 
 		void AddActor(class Actor* actor);
 		void RemoveActor(class Actor* actor);
+		void RemoveAllActors();
 
 		void SetGame(Game* game) { m_game = game; }
 		Game* GetGame() { return m_game; }

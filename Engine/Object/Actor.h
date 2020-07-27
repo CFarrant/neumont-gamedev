@@ -13,7 +13,8 @@ namespace nc
 		{
 			PLAYER,
 			ENEMY,
-			PROJECTILE
+			PROJECTILE,
+			LOCATOR
 		};
 
 	public:
@@ -39,10 +40,18 @@ namespace nc
 		void SetDestroy(bool destroy = true) { m_destroy = destroy; };
 		bool IsDestroyed() { return m_destroy; }
 
+		void SetChild(Actor* child) { m_child = child; child->m_parent = this; }
+
+		Actor* GetChild() { return m_child; }
+		Actor* GetParent() { return m_parent; }
+
 	protected:
 		bool m_destroy{ false };
 		Scene* m_scene { nullptr };
 		Transform m_transform;
 		Shape m_shape;
+
+		Actor* m_child{ nullptr };
+		Actor* m_parent{ nullptr };
 	};
 }

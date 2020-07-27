@@ -16,6 +16,7 @@ namespace nc
 
 		return stream;
 	}
+
 	void Transform::Update()
 	{
 		Matrix3D mxs; mxs.Scale(scale); //Scale
@@ -23,5 +24,11 @@ namespace nc
 		Matrix3D mxt; mxt.Translate(position); //Translate
 
 		matrix = mxs * mxr * mxt; //Scale & Rotate
+	}
+
+	void Transform::Update(const Matrix3D pmx)
+	{
+		Update();
+		matrix = matrix * pmx;
 	}
 }

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Enemy.h"
 #include "Projectile.h"
 #include "Object/Scene.h"
 #include "../Game.h"
@@ -66,19 +67,37 @@ void Player::Update(float dt)
 
 	if (force.LengthSquared() > 0)
 	{
-		g_particleSystem.Create(m_transform.position, m_transform.angle, 20, 1, nc::Color::white, 1, 100, 200);
-		g_particleSystem.Create(m_transform.position, m_transform.angle, 20, 1, nc::Color::red, 1, 100, 200);
-		g_particleSystem.Create(m_transform.position, m_transform.angle, 20, 1, nc::Color::yellow, 1, 100, 200);
-		g_particleSystem.Create(m_transform.position, m_transform.angle, 20, 1, nc::Color::orange, 1, 100, 200);
+		Actor* locator = m_child;
+		g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle, 20, 1, nc::Color::white, 1, 100, 200);
+		g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle, 20, 1, nc::Color::red, 1, 100, 200);
+		g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle, 20, 1, nc::Color::yellow, 1, 100, 200);
+		g_particleSystem.Create(locator->GetTransform().position, locator->GetTransform().angle, 20, 1, nc::Color::orange, 1, 100, 200);
 	}
 
 	m_transform.Update();
+
+	if (m_child)
+	{
+		m_child->Update(dt);
+	}
 }
 
 void Player::OnCollision(Actor * actor)
 {
 	if (actor->GetType() == eType::ENEMY)
 	{
-		//m_scene->GetGame()->SetState(Game::eState::GAME_OVER);
+		m_scene->GetGame()->SetState(Game::eState::PLAYER_DEAD);
+		m_destroy = true;
+
+		auto enemies = m_scene->GetActors<Enemy>();
+		for (auto enemy : enemies) {
+			enemy->SetTarget(nullptr);
+		}
+
+		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::red, 1, 100, 200);
+		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::orange, 1, 100, 200);
+		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::yellow, 1, 100, 200);
+		g_particleSystem.Create(m_transform.position, 0, 180, 90, nc::Color::white, 1, 100, 200);
+		g_audioSystem.PlayAudio("Explosion");
 	}
 }

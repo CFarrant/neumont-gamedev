@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "Actors/Player.h"
 #include "Actors/Enemy.h"
+#include "Actors/Locator.h"
 #include "Actors/Projectile.h"
 #include "Graphics/ParticleSystem.h"
 #include "Audio/AudioSystem.h"
@@ -43,12 +44,19 @@ bool Game::Update(float dt)
 		if (Core::Input::IsPressed(VK_SPACE))
 		{
 			m_state = eState::START_GAME;
+			m_score = 0;
+			m_lives = 3;
 		}
 		break;
 	case Game::eState::START_GAME:
 		{
 			nc::Actor* player = new Player();
 			player->Load("player.actor");
+
+			Locator* locator = new Locator();
+			locator->GetTransform().position = nc::Vector2D{ 0, 4 };
+			player->SetChild(locator);
+
 			m_scene.AddActor(player);
 
 			for (int i = 0; i < 5; i++)
@@ -63,6 +71,13 @@ bool Game::Update(float dt)
 			m_state = eState::GAME;
 		}
 		break;
+	case Game::eState::PLAYER_DEAD:
+		{
+			m_lives -= 1;
+			m_state = (m_lives == 0) ? eState::GAME_OVER : eState::GAME_WAIT;
+			m_stateTimer = 3.0f;
+		}
+		break;
 	case Game::eState::GAME:
 		m_spawnTimer += dt;
 		if (m_spawnTimer >= 3)
@@ -75,15 +90,28 @@ bool Game::Update(float dt)
 			enemy->GetTransform().position = nc::Vector2D{ nc::Random(0,800), nc::Random(0,600) };
 			m_scene.AddActor(enemy);
 		}
-		m_scene.Update(dt);
+		break;
+	case Game::eState::GAME_WAIT:
+		m_stateTimer -= dt;
+		if (m_stateTimer <= 0)
+		{
+			m_scene.RemoveAllActors();
+			m_state = eState::START_GAME;
+		}
 		break;
 	case Game::eState::GAME_OVER:
+		m_stateTimer -= dt;
+		if (m_stateTimer <= 0)
+		{
+			m_scene.RemoveAllActors();
+			m_state = eState::TITLE;
+		}
 		break;
 	default:
 		break;
 	}
 
-	if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
+	/*if (Core::Input::IsPressed(Core::Input::BUTTON_LEFT))
 	{
 		int x, y;
 		Core::Input::GetMousePos(x, y);
@@ -92,8 +120,9 @@ bool Game::Update(float dt)
 		nc::Color color = colors[rand() % 4];
 
 		g_particleSystem.Create(nc::Vector2D{x, y}, 0, 180, 30, color, 1, 100, 200);
-	}
+	}*/
 
+	m_scene.Update(dt);
 	g_particleSystem.Update(dt);
 	g_audioSystem.Update(dt);
 
@@ -103,7 +132,7 @@ bool Game::Update(float dt)
 void Game::Draw(Core::Graphics & graphics)
 {
 
-	graphics.SetColor(nc::Color{ 1,1,1 });
+	graphics.SetColor(nc::Color::white);
 	graphics.DrawString(10, 10, std::to_string(m_frameTime).c_str());
 	graphics.DrawString(10, 20, std::to_string(1.0f / m_frameTime).c_str());
 
@@ -123,10 +152,11 @@ void Game::Draw(Core::Graphics & graphics)
 		break;
 	case Game::eState::START_GAME:
 		break;
+	case Game::eState::PLAYER_DEAD:
+		break;
 	case Game::eState::GAME:
-		graphics.SetColor(nc::Color::white);
-		graphics.DrawString(700, 10, std::to_string(m_score).c_str());
-		m_scene.Draw(graphics);
+		break;
+	case Game::eState::GAME_WAIT:
 		break;
 	case Game::eState::GAME_OVER:
 		{
@@ -139,4 +169,13 @@ void Game::Draw(Core::Graphics & graphics)
 	default:
 		break;
 	}
+
+	if (m_state != eState::TITLE && m_state != eState::INIT)
+	{
+		graphics.SetColor(nc::Color::white);
+		graphics.DrawString(700, 10, std::to_string(m_score).c_str());
+		graphics.DrawString(700, 20, ("LIVES: " + std::to_string(m_lives)).c_str());
+	}
+
+	m_scene.Draw(graphics);
 }

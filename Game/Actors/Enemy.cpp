@@ -27,10 +27,14 @@ bool Enemy::Load(const std::string & filename)
 
 void Enemy::Update(float dt)
 {
-	nc::Vector2D direction = m_target->GetTransform().position - m_transform.position;
+	nc::Vector2D direction;
+	if (m_target)
+	{
+		direction = m_target->GetTransform().position - m_transform.position;
+		m_transform.angle = std::atan2(direction.y, direction.x) + nc::DegreesToRadians(90);
+	}
 	nc::Vector2D velocity = direction.Normalized() * m_thrust;
 	m_transform.position += velocity * dt;
-	m_transform.angle = std::atan2(direction.y, direction.x) + nc::DegreesToRadians(90);
 
 	m_transform.Update();
 }

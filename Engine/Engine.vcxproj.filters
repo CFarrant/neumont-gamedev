@@ -50,9 +50,6 @@
     <ClInclude Include="Object\Actor.h">
       <Filter>Object</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Transform.h">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Math\Matrix2D.h">
       <Filter>Math</Filter>
     </ClInclude>
@@ -70,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="Audio\AudioSystem.h">
       <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Transform.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
