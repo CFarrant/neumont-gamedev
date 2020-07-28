@@ -55,7 +55,7 @@ bool Game::Update(float dt)
 
 			Locator* locator = new Locator();
 			locator->GetTransform().position = nc::Vector2D{ 0, 2 };
-			player->SetChild(locator);
+			player->AddChild(locator);
 
 			m_scene.AddActor(player);
 

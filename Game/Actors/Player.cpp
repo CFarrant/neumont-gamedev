@@ -67,7 +67,7 @@ void Player::Update(float dt)
 
 	if (force.LengthSquared() > 0)
 	{
-		Actor* locator = m_child;
+		Actor* locator = m_children[0];
 		g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(), locator->GetTransform().matrix.GetAngle(), 20, 1, nc::Color::white, 1, 100, 200);
 		g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(), locator->GetTransform().matrix.GetAngle(), 20, 1, nc::Color::red, 1, 100, 200);
 		g_particleSystem.Create(locator->GetTransform().matrix.GetPosition(), locator->GetTransform().matrix.GetAngle(), 20, 1, nc::Color::yellow, 1, 100, 200);
@@ -76,9 +76,9 @@ void Player::Update(float dt)
 
 	m_transform.Update();
 
-	if (m_child)
+	for (Actor* child : m_children)
 	{
-		m_child->Update(dt);
+		child->Update(dt);
 	}
 }
 

@@ -22,6 +22,8 @@ namespace nc
 		Actor(const Transform& transform, const Shape& shape); //make sure to initalize m_transform and m_shape
 		virtual ~Actor() {}
 
+		virtual void Destroy();
+
 		virtual eType GetType() = 0;
 
 		virtual bool Load(const std::string& filename);
@@ -40,9 +42,7 @@ namespace nc
 		void SetDestroy(bool destroy = true) { m_destroy = destroy; };
 		bool IsDestroyed() { return m_destroy; }
 
-		void SetChild(Actor* child) { m_child = child; child->m_parent = this; }
-
-		Actor* GetChild() { return m_child; }
+		void AddChild(Actor* child);
 		Actor* GetParent() { return m_parent; }
 
 	protected:
@@ -51,7 +51,7 @@ namespace nc
 		Transform m_transform;
 		Shape m_shape;
 
-		Actor* m_child{ nullptr };
+		std::vector<Actor*> m_children;
 		Actor* m_parent{ nullptr };
 	};
 }

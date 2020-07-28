@@ -13,6 +13,10 @@ nc::Actor::Actor(const Transform& transform, const Shape& shape)
 	m_transform = transform;
 }
 
+void nc::Actor::Destroy()
+{
+}
+
 bool nc::Actor::Load(const std::string & filename)
 {
 	bool success = false;
@@ -60,4 +64,10 @@ nc::Transform& nc::Actor::GetTransform()
 nc::Shape& nc::Actor::GetShape()
 {
 	return this->m_shape;
+}
+
+void nc::Actor::AddChild(Actor * child)
+{
+	m_children.push_back(child);
+	child->m_parent = this;
 }
