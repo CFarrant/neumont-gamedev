@@ -15,6 +15,11 @@ nc::Actor::Actor(const Transform& transform, const Shape& shape)
 
 void nc::Actor::Destroy()
 {
+	for (Actor* child : m_children)
+	{
+		delete child;
+	}
+	m_children.clear();
 }
 
 bool nc::Actor::Load(const std::string & filename)

@@ -56,8 +56,12 @@ void Player::Update(float dt)
 	m_transform.position = m_transform.position + (m_velocity * dt);
 
 	//rotate
-	if (Core::Input::IsPressed('A')) { m_transform.angle = m_transform.angle - (dt * nc::DegreesToRadians(m_rotationRate)); }
-	if (Core::Input::IsPressed('D')) { m_transform.angle = m_transform.angle + (dt * nc::DegreesToRadians(m_rotationRate)); }
+	float torque{ 0 };
+	if (Core::Input::IsPressed('A')) { torque = -nc::DegreesToRadians(m_rotationRate); }
+	if (Core::Input::IsPressed('D')) { torque = nc::DegreesToRadians(m_rotationRate); }
+	m_angularVelocity = m_angularVelocity + torque * dt;
+	m_angularVelocity = m_angularVelocity * 0.98f;
+	m_transform.angle += m_angularVelocity * dt;
 
 	//wrap
 	if (m_transform.position.x > 800) { m_transform.position.x = 0; }

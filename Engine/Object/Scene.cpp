@@ -30,6 +30,7 @@ void nc::Scene::Update(float dt)
 	{
 		if ((*iter)->IsDestroyed()) 
 		{
+			(*iter)->Destroy();
 			delete* iter;
 			iter = m_actors.erase(iter);
 		}

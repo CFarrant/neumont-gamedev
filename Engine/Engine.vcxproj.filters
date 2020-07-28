@@ -94,14 +94,14 @@
     <ClCompile Include="Math\Transform.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="Object\Scene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\ParticleSystem.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Object\Scene.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
     <ClCompile Include="Audio\AudioSystem.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

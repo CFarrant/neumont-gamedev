@@ -139,8 +139,8 @@ void Game::Draw(Core::Graphics & graphics)
 {
 
 	graphics.SetColor(nc::Color::white);
-	graphics.DrawString(10, 10, std::to_string(m_frameTime).c_str());
-	graphics.DrawString(10, 20, std::to_string(1.0f / m_frameTime).c_str());
+	//graphics.DrawString(10, 10, std::to_string(m_frameTime).c_str());
+	graphics.DrawString(10, 10, std::to_string(static_cast<unsigned int>(1.0f / m_frameTime)).c_str());
 
 	g_particleSystem.Draw(graphics);
 

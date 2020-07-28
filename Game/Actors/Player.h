@@ -20,4 +20,5 @@ protected:
 	float m_fireRate{ 0.2f };
 	float m_fireTimer{ 0.0f };
 	nc::Vector2D m_velocity;
+	float m_angularVelocity{ 0.0f };
 };
