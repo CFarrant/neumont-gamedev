@@ -51,6 +51,21 @@ namespace nc
 			m[0][2] = v.x; m[1][2] = v.y; m[2][2] = 1;
 		}
 
+		Vector2D GetPosition() const
+		{
+			return Vector2D{ m[0][2], m[1][2] };
+		}
+
+		Vector2D GetScale() const
+		{
+			return Vector2D{ m[0][0], m[1][1] };
+		}
+
+		float GetAngle() const
+		{
+			return std::atan2(m[1][0], m[0][0]);
+		}
+
 		Matrix3D operator * (const Matrix3D& mx)
 		{
 			Matrix3D result;
