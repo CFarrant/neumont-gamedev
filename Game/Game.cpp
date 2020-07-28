@@ -8,6 +8,7 @@
 #include "Math/Random.h"
 #include "Math/Transform.h"
 #include "Math/Color.h"
+#include "Math/Math.h"
 #include "Graphics/Shape.h"
 #include <string>
 #include <list>
@@ -64,8 +65,13 @@ bool Game::Update(float dt)
 				nc::Actor* enemy = new Enemy();
 				enemy->Load("enemy.actor");
 				dynamic_cast<Enemy*>(enemy)->SetTarget(player);
+
+				float distance = nc::Random(300, 600);
+				float angle = nc::Random(0, nc::TWO_PI);
+				nc::Vector2D position = nc::Vector2D::Rotate(nc::Vector2D{ distance, 0.0f }, angle);
+
 				dynamic_cast<Enemy*>(enemy)->SetThrust(nc::Random(50, 100));
-				enemy->GetTransform().position = nc::Vector2D{ nc::Random(0,800), nc::Random(0,600) };
+				enemy->GetTransform().position = nc::Vector2D{400, 300} + position;
 				m_scene.AddActor(enemy);
 			}
 			m_state = eState::GAME;
