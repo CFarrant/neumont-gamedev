@@ -39,11 +39,14 @@ bool Game::Update(float dt)
 	case Game::eState::INIT:
 		g_audioSystem.AddAudio("Laser", "Laser.wav");
 		g_audioSystem.AddAudio("Explosion", "Explosion.wav");
+		g_audioSystem.AddAudio("Coin", "Coin.wav");
+		g_audioSystem.AddAudio("GameOver", "GameOver.wav");
 		m_state = eState::TITLE;
 		break;
 	case Game::eState::TITLE:
 		if (Core::Input::IsPressed(VK_SPACE))
 		{
+			g_audioSystem.PlayAudio("Coin");
 			m_state = eState::START_GAME;
 			m_score = 0;
 			m_lives = 3;
@@ -63,7 +66,12 @@ bool Game::Update(float dt)
 			for (int i = 0; i < 5; i++)
 			{
 				nc::Actor* enemy = new Enemy();
-				enemy->Load("enemy.actor");
+
+				std::vector<std::string> enemies = { "enemy_one.actor", "enemy_two.actor" };
+				std::string randEnemy = enemies[rand() % 2];
+
+				enemy->Load(randEnemy);
+
 				dynamic_cast<Enemy*>(enemy)->SetTarget(player);
 
 				float distance = nc::Random(300, 600);
@@ -83,6 +91,9 @@ bool Game::Update(float dt)
 			m_state = (m_lives == 0) ? eState::GAME_OVER : eState::GAME_WAIT;
 			m_stateTimer = 3.0f;
 		}
+		if (m_state == eState::GAME_OVER) {
+			g_audioSystem.PlayAudio("GameOver");
+		}
 		break;
 	case Game::eState::GAME:
 		m_spawnTimer += dt;
@@ -90,11 +101,23 @@ bool Game::Update(float dt)
 		{
 			m_spawnTimer = 0.0f;
 			nc::Actor* enemy = new Enemy();
-			enemy->Load("enemy.actor");
+
+			std::vector<std::string> enemies = { "enemy_one.actor", "enemy_two.actor" };
+			std::string randEnemy = enemies[rand() % 2];
+
+			enemy->Load(randEnemy);
 			dynamic_cast<Enemy*>(enemy)->SetTarget(m_scene.GetActor<Player>());
 			dynamic_cast<Enemy*>(enemy)->SetThrust(nc::Random(50, 100));
 			enemy->GetTransform().position = nc::Vector2D{ nc::Random(0,800), nc::Random(0,600) };
 			m_scene.AddActor(enemy);
+		}
+		if (Core::Input::IsPressed('P')) {
+			m_state = eState::GAME_PAUSED;
+		}
+		break;
+	case Game::eState::GAME_PAUSED:
+		if (Core::Input::IsPressed('P')) {
+			m_state = eState::GAME;
 		}
 		break;
 	case Game::eState::GAME_WAIT:
@@ -112,6 +135,9 @@ bool Game::Update(float dt)
 			m_scene.RemoveAllActors();
 			m_state = eState::TITLE;
 		}
+		if (m_score > m_highScore) {
+			m_highScore = m_score;
+		}
 		break;
 	default:
 		break;
@@ -128,7 +154,9 @@ bool Game::Update(float dt)
 		g_particleSystem.Create(nc::Vector2D{x, y}, 0, 180, 30, color, 1, 100, 200);
 	}*/
 
-	m_scene.Update(dt);
+	if (m_state != eState::GAME_PAUSED) {
+		m_scene.Update(dt);
+	}
 	g_particleSystem.Update(dt);
 	g_audioSystem.Update(dt);
 
@@ -139,7 +167,6 @@ void Game::Draw(Core::Graphics & graphics)
 {
 
 	graphics.SetColor(nc::Color::white);
-	//graphics.DrawString(10, 10, std::to_string(m_frameTime).c_str());
 	graphics.DrawString(10, 10, std::to_string(static_cast<unsigned int>(1.0f / m_frameTime)).c_str());
 
 	g_particleSystem.Draw(graphics);
@@ -164,6 +191,14 @@ void Game::Draw(Core::Graphics & graphics)
 		break;
 	case Game::eState::GAME_WAIT:
 		break;
+	case Game::eState::GAME_PAUSED:
+		{
+			nc::Color colors[] = { nc::Color::red, nc::Color::yellow, nc::Color::orange };
+			nc::Color color = colors[rand() % 3];
+			graphics.SetColor(color);
+			graphics.DrawString(375, 275, "PAUSED!");
+		}
+		break;
 	case Game::eState::GAME_OVER:
 		{
 			nc::Color colors[] = { nc::Color::red, nc::Color::yellow, nc::Color::orange };
@@ -181,6 +216,9 @@ void Game::Draw(Core::Graphics & graphics)
 		graphics.SetColor(nc::Color::white);
 		graphics.DrawString(700, 10, std::to_string(m_score).c_str());
 		graphics.DrawString(700, 20, ("LIVES: " + std::to_string(m_lives)).c_str());
+		if (m_highScore > 0) {
+			graphics.DrawString(360, 10, ("HIGH SCORE: " + std::to_string(m_highScore)).c_str());
+		}
 	}
 
 	m_scene.Draw(graphics);
